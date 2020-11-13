@@ -1,12 +1,12 @@
 import { AuthCallback, IPluginAuth, IPluginMiddleware } from "@verdaccio/types"
 import { Application } from "express"
+import { AzureAuthProvider } from "../azure"
 
 import { CliFlow, WebFlow } from "../flows"
-import { GitHubAuthProvider } from "../github"
 import { Auth, Verdaccio } from "../verdaccio"
 import { AuthCore } from "./AuthCore"
 import { Cache } from "./Cache"
-import { Config, validateConfig } from "./Config"
+import { Config, validateConfig } from "../azure/AzureConfig"
 import { PatchHtml } from "./PatchHtml"
 import { registerGlobalProxyAgent } from "./ProxyAgent"
 import { ServeStatic } from "./ServeStatic"
@@ -15,7 +15,7 @@ import { ServeStatic } from "./ServeStatic"
  * Implements the verdaccio plugin interfaces.
  */
 export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
-  private readonly provider = new GitHubAuthProvider(this.config)
+  private readonly provider = new AzureAuthProvider(this.config)
   private readonly cache = new Cache(this.provider)
   private readonly verdaccio = new Verdaccio(this.config)
   private readonly core = new AuthCore(this.verdaccio, this.config)

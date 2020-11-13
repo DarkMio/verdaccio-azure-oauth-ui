@@ -2,10 +2,11 @@ import { stringify } from "querystring"
 
 import { logger } from "../../logger"
 import { User, Verdaccio } from "../verdaccio"
-import { Config, getConfig } from "./Config"
+import { Config, getConfig } from "../azure/AzureConfig"
 
 export class AuthCore {
-  private readonly requiredOrgName = getConfig(this.config, "org")
+  private readonly requiredOrgName = getConfig(this.config, "tenant")
+  private readonly optionalGroups = getConfig(this.config, "allow-groups") || [];
 
   constructor(
     private readonly verdaccio: Verdaccio,
@@ -34,7 +35,10 @@ export class AuthCore {
   }
 
   authenticate(username: string, groups: string[]): boolean {
-    const success = groups.includes(this.requiredOrgName)
+    let success = groups.includes(this.requiredOrgName)
+    if(!success) {
+      success = groups.some(x => groups.includes(x));
+    }
 
     if (!success) {
       logger.error(this.getDeniedMessage(username))
