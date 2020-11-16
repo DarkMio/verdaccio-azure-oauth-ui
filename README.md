@@ -1,39 +1,17 @@
-<h1 align="center">
-  📦🔐 Verdaccio GitHub OAuth - With UI Support
-</h1>
+# 📦🔐 Verdaccio Azure OAuth - With UI Support
 
-<p align="center">
-  A GitHub OAuth Plugin for Verdaccio – <a href="https://www.verdaccio.org">https://www.verdaccio.org</a>
-</p>
-
-<p align="center">
-  <a href="https://www.npmjs.com/package/verdaccio-github-oauth-ui">
-    <img alt="Version" src="https://flat.badgen.net/npm/v/verdaccio-github-oauth-ui?icon=npm">
-  </a>
-  <a href="https://raw.githubusercontent.com/n4bb12/verdaccio-github-oauth-ui/master/LICENSE">
-    <img alt="License" src="https://flat.badgen.net/github/license/n4bb12/verdaccio-github-oauth-ui?icon=github">
-  </a>
-  <a href="https://github.com/n4bb12/verdaccio-github-oauth-ui/issues/new/choose">
-    <img alt="Issues" src="https://flat.badgen.net/badge/github/create issue/pink?icon=github">
-  </a>
-  <a href="https://circleci.com/gh/n4bb12/workflows/verdaccio-github-oauth-ui">
-    <img alt="CircleCI" src="https://flat.badgen.net/circleci/github/n4bb12/verdaccio-github-oauth-ui/master?icon=circleci">
-  </a>
-  <a href="https://david-dm.org/n4bb12/verdaccio-github-oauth-ui">
-    <img alt="Dependencies" src="https://flat.badgen.net/david/dep/n4bb12/verdaccio-github-oauth-ui?icon=npm">
-  </a>
-</p>
+An Azure OAuth Plugin for Verdaccio
 
 ## About
 
 <img src="screenshots/authorize.png" align="right" width="270"/>
 
-This is a Verdaccio plugin that offers GitHub OAuth integragtion for both the browser and the command line.
+This is a Verdaccio plugin that offers Azure OAuth integration for both the browser and the command line.
 
 ### Features
 
 - UI integration with fully functional login and logout. When clicking the login button the user is redirected to GitHub and returns with a working session.
-- Updated usage info and working copy-to-clipboard for setup commands. 
+- Updated usage info and working copy-to-clipboard for setup commands.
 - A small CLI for quick-and-easy configuration.
 
 ### Compatibility
@@ -47,15 +25,15 @@ This is a Verdaccio plugin that offers GitHub OAuth integragtion for both the br
 ### Install
 
 ```
-$ npm install verdaccio-github-oauth-ui
+$ npm install verdaccio-azure-ui
 ```
 
-### GitHub Config
+### Azure Config
 
-- Create an OAuth app at https://github.com/settings/developers
+- Create a new app registration in azure: https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade
+- the API permission needs Group.Read.All, User.Read
+- create a new Secret
 - The callback URL should be `YOUR_REGISTRY_URL/-/oauth/callback`
-
-![](screenshots/github-app.png)
 
 ### Verdaccio Config
 
@@ -63,15 +41,17 @@ Merge the below options with your existing Verdaccio config:
 
 ```yml
 middlewares:
-  github-oauth-ui:
+  azure-ui:
     enabled: true
 
 auth:
-  github-oauth-ui:
-    org: GITHUB_ORG
-    client-id: GITHUB_CLIENT_ID
-    client-secret: GITHUB_CLIENT_SECRET
-    enterprise-origin: GITHUB_ENTERPRISE_ORIGIN # optional, if you are using github enterprise
+  azure-ui:
+    tenant: `TENANT ID`
+    client-id: `APPLICATION ID`
+    client-secret: `APPLICATION SECRET`
+    scope: `OPTIONAL API SCOPES`
+    allow-groups:
+    - a_group # optional list of user groups allowed to authenticate
 
 url_prefix: YOUR_REGISTRY_URL # optional, make sure it is configured as described
 ```
@@ -79,17 +59,21 @@ url_prefix: YOUR_REGISTRY_URL # optional, make sure it is configured as describe
 - The configured values can either be the actual value or the name of an environment variable that contains the value.
 - The config props can be specified under either the `middlewares` or the `auth` node. Just make sure, the addon is included under both nodes.
 
-#### `org`
+#### `tenant`
 
-Users within this org will be able to authenticate.
+Users within this tenant will be able to authenticate.
 
 #### `client-id` and `client-secret`
 
-These values can be obtained from GitHub OAuth app page at https://github.com/settings/developers.
+These values can be obtained from the app registration: https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade
 
-#### `enterprise-origin` (optional)
+#### `scope` (optional)
 
-Set this if you are using GitHub Enterprise. Example: `https://hostname`
+Requests additional scopes for the user, in case you want to re-use the OpenID bearer token for more use-cases in Verdaccio.
+
+#### `allow-groups` (optional)
+
+User Groups that are allowed to authenticate within this Azure ActiveDirectory.
 
 #### `url_prefix` (optional)
 
@@ -105,14 +89,14 @@ Configure the below environment variable.
 $ export GLOBAL_AGENT_HTTP_PROXY=http://127.0.0.1:8080
 ```
 
-See the [global-agent](https://github.com/gajus/global-agent#environment-variables) docs for detailed configuration instrcutions.
+See the [global-agent](https://github.com/gajus/global-agent#environment-variables) docs for detailed configuration instructions.
 
 ## Login
 
 ### Verdaccio UI
 
-- Click the login button and get redirected to GitHub.
-- Authorize the registry to access your GitHub user and org info. You only need to do this once. If your org is private, make sure to click the <kbd>Request</kbd> or <kbd>Grant</kbd> button to get `read:org` access when prompted to authorize.
+- Click the login button and get redirected to Microsoft Login Portal for the tenant..
+- Authorize the registry to access your Azure user and tenant info. You only need to do this once. If your tenant is private, make sure to click the <kbd>Request</kbd> or <kbd>Grant</kbd> button to get `read:org` access when prompted to authorize.
 - Once completed, you'll be redirected back to the Verdaccio registry.
 
 You are now logged in.
@@ -152,10 +136,10 @@ $ npm config set //localhost:4873:always-auth true
 
 ```
 $ npm whoami --registry http://localhost:4873
-n4bb12
+Martin Zier
 ```
 
-If you see your GitHub username, you are ready to start installing and publishing packages.
+If you see your Azure full name, you are ready to start installing and publishing packages.
 
 ## Logout
 
@@ -165,32 +149,7 @@ Click the <kbd>Logout</kbd> button as per usual.
 
 ### Command Line
 
-Unless OAuth access is revoked in the GitHub settings, the token is valid indefinitely.
-
-## Revoke Tokens
-
-To invalidate your active login tokens you need to revoke access on the GitHub OAuth app:
-
-- Go to https://github.com/settings/applications
-- Find your Verdaccio app
-- Click the <kbd>Revoke</kbd> button as shown below
-
-![](screenshots/revoke.png)
-
-If you have created the GitHub OAuth app, you can also revoke access for all users:
-
-- Go to https://github.com/settings/applications
-- Find your Verdaccio app
-- Click the app name
-- On the app detail page click the <kbd>Revoke all user tokens</kbd> button
-
-
-## Troubleshooting
-
-### "Failed requesting GitHub user info"
-
-- Double-check your configured client id and client secret are correct.
-- If you are behind a proxy, make sure you are also passing through the query parameters to Verdaccio, see https://github.com/n4bb12/verdaccio-github-oauth-ui/issues/47#issuecomment-643814163 for an nginx example.
+Unless OAuth access is revoked in the Azure settings, the token is valid indefinitely.
 
 ### Plugin not detected when installed globally
 
@@ -202,7 +161,3 @@ Verdaccio loads plugins by requiring them but global `node_modules` are NOT sear
 - Extend the official docker image. See this `docker.sh` and `Dockerfile` in this [example](https://gist.github.com/n4bb12/523e8347a580f596cbf14d0d791b5927).
 
 More info: https://github.com/n4bb12/verdaccio-github-oauth-ui/issues/13#issuecomment-435296117
-
-### "Your auth token is no longer valid. Please log in again."
-
-- If you're using a private GitHub org, the org memberships might not be public. If this is the case, your org members need `read:org` permission. They can request this during fist login by clicking the <kbd>Request</kbd> or <kbd>Grant</kbd> button when prompted to authorize Verdaccio with GitHub. If you or a team member accidentally skipped this step, go to https://github.com/settings/applications, find your Verdaccio registry and grant `read:org` access from there.

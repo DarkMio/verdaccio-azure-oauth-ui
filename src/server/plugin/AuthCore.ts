@@ -6,7 +6,7 @@ import { Config, getConfig } from "../azure/AzureConfig"
 
 export class AuthCore {
   private readonly requiredOrgName = getConfig(this.config, "tenant")
-  private readonly optionalGroups = getConfig(this.config, "allow-groups") || [];
+  private readonly optionalGroups = getConfig(this.config, "allow-groups") || []
 
   constructor(
     private readonly verdaccio: Verdaccio,
@@ -36,8 +36,8 @@ export class AuthCore {
 
   authenticate(username: string, groups: string[]): boolean {
     let success = groups.includes(this.requiredOrgName)
-    if(!success) {
-      success = groups.some(x => groups.includes(x));
+    if (!success) {
+      success = groups.some((x) => groups.includes(x))
     }
 
     if (!success) {

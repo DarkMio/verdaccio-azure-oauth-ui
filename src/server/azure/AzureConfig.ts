@@ -5,15 +5,13 @@ import { get } from "lodash"
 import { pluginName } from "../../constants"
 import { logger } from "../../logger"
 
-
 export interface AzureConfig {
-  tenant: string,
-  "client-id": string,
-  "client-secret": string,
-  "scope"?: string | "",
+  tenant: string
+  "client-id": string
+  "client-secret": string
+  scope?: string | ""
   "allow-groups"?: string[]
 }
-
 
 export type PluginConfigKey = keyof AzureConfig
 

@@ -1,4 +1,4 @@
-export const pluginName = "azure-oauth-ui"
+export const pluginName = "azure-ui"
 export const publicRoot = __dirname + "/public"
 export const staticPath = "/-/static/" + pluginName
 export const authorizePath = "/-/oauth/authorize"
