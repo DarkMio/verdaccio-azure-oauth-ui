@@ -1,0 +1,16 @@
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: Packages/azure.pipelines
+
+trigger:
+  tags: 
+    include:
+    - 'release/v*'
+    - 'v*'
+
+pool: 'Unity Pipelines'
+
+jobs:
+- template: templates/pipelines/node/publish-npm-package.yml

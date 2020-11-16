@@ -2,7 +2,8 @@ import { Request } from "express"
 import { stringify } from "querystring"
 
 import { AuthProvider } from "../plugin/AuthProvider"
-import { Config, getConfig } from "../plugin/Config"
+import { GithubConfig } from "./GithubConfig"
+import { getConfig } from "../plugin/Config"
 import { GitHubClient } from "./Client"
 
 export class GitHubAuthProvider implements AuthProvider {
@@ -24,7 +25,7 @@ export class GitHubAuthProvider implements AuthProvider {
       : "https://api.github.com"
   }
 
-  constructor(private readonly config: Config) {}
+  constructor(private readonly config: GithubConfig) {}
 
   getId() {
     return "github"
@@ -41,6 +42,10 @@ export class GitHubAuthProvider implements AuthProvider {
 
   getCode(req: Request) {
     return req.query.code as string
+  }
+
+  getAllowedGroups() {
+    return [getConfig(this.config, "org")];
   }
 
   async getToken(code: string) {

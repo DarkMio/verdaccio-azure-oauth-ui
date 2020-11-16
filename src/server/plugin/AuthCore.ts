@@ -2,15 +2,13 @@ import { stringify } from "querystring"
 
 import { logger } from "../../logger"
 import { User, Verdaccio } from "../verdaccio"
-import { Config, getConfig } from "../azure/AzureConfig"
+import { AuthProvider } from "./AuthProvider"
+import { Config, getConfig } from "./Config"
 
 export class AuthCore {
-  private readonly requiredOrgName = getConfig(this.config, "tenant")
-  private readonly optionalGroups = getConfig(this.config, "allow-groups") || []
-
   constructor(
     private readonly verdaccio: Verdaccio,
-    private readonly config: Config,
+    private readonly authProvider: AuthProvider
   ) {}
 
   createAuthenticatedUser(username: string): User {
@@ -18,7 +16,7 @@ export class AuthCore {
     return {
       name: username,
       groups: ["$all", "@all", "$authenticated", "@authenticated"],
-      real_groups: [username, this.requiredOrgName],
+      real_groups: [username, ...this.authProvider.getAllowedGroups()],
     }
   }
 
@@ -35,10 +33,7 @@ export class AuthCore {
   }
 
   authenticate(username: string, groups: string[]): boolean {
-    let success = groups.includes(this.requiredOrgName)
-    if (!success) {
-      success = groups.some((x) => groups.includes(x))
-    }
+    const success = groups.some(x => this.authProvider.getAllowedGroups().includes(x));
 
     if (!success) {
       logger.error(this.getDeniedMessage(username))
@@ -48,6 +43,6 @@ export class AuthCore {
   }
 
   private getDeniedMessage(username: string) {
-    return `Access denied: User "${username}" is not a member of "${this.requiredOrgName}"`
+    return `Access denied: User "${username}" is not a member of "${this.authProvider.getAllowedGroups()}"`
   }
 }

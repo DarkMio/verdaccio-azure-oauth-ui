@@ -1,6 +1,5 @@
 import got from "got"
 
-import { logger } from "../../logger"
 import { GitHubOAuth } from "./OAuth"
 import { GitHubOrganization } from "./Organization"
 import { GitHubUser } from "./User"

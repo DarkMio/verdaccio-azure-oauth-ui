@@ -2,7 +2,8 @@ import got from "got"
 import { Request } from "express"
 import { stringify } from "querystring"
 
-import { Config, getConfig } from "./AzureConfig"
+import { AzureConfig } from "./AzureConfig"
+import { getConfig } from "./../plugin/Config"
 import { AuthProvider } from "../plugin/AuthProvider"
 import { logger } from "../../logger"
 
@@ -30,11 +31,12 @@ export class AzureAuthProvider implements AuthProvider {
   private readonly clientId = getConfig(this.config, "client-id")
   private readonly clientSecret = getConfig(this.config, "client-secret")
   private readonly scope = BASE_SCOPE + (getConfig(this.config, "scope") || "")
+  private readonly allowedGroups = getConfig<string[]>(this.config, "allow-groups") || [];
   private readonly endpointUrl: string
   private readonly tokenUrl: string
   private readonly authorizationUrl: string
 
-  public constructor(private readonly config: Config) {
+  constructor(private readonly config: AzureConfig) {
     this.endpointUrl = API_URL + this.tenant
     this.tokenUrl = this.endpointUrl + TOKEN_ENDPOINT
     this.authorizationUrl = this.endpointUrl + AUTHORIZATION_ENDPOINT
@@ -57,6 +59,10 @@ export class AzureAuthProvider implements AuthProvider {
 
   getCode(req: Request): string {
     return req.query.code as string
+  }
+
+  getAllowedGroups(): string[] {
+    return [this.tenant, ...this.allowedGroups] as string[];
   }
 
   async getToken(code: string, callbackUrl?: string): Promise<string> {

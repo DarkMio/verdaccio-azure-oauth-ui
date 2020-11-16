@@ -7,7 +7,7 @@
 storage: ./storage
 
 # path to a directory with plugins to include
-plugins: ./plugins
+plugins: ./../
 
 web:
   # WebUI is enabled as default, if you want disable it, just uncomment this line
@@ -17,12 +17,12 @@ web:
 middlewares:
   audit:
     enabled: true
-  github-oauth-ui:
+  azure-ui:
     enabled: true
 
 auth:
-  github-oauth-ui:
-    org: GITHUB_ORG # required, people within this org will be able to authenticate
+  azure-ui:
+    tenant: GITHUB_ORG # required, people within this org will be able to authenticate
     client-id: GITHUB_CLIENT_ID # required
     client-secret: GITHUB_CLIENT_SECRET # required
     # enterprise-origin: GITHUB_ENTERPRISE_ORIGIN # optional, set this if you are using github enterprise

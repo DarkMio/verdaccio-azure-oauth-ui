@@ -38,7 +38,7 @@
     "test:watch": "jest --watch",
     "test:whoami": "bash run test-whoami",
     "update": "yarn prepack && bash run copy",
-    "watch": "nodemon --watch src --ext ts,css --exec \"yarn update\""
+    "watch": "nodemon --watch src --ext ts,css --exec \"yarn lint\""
   },
   "dependencies": {
     "chalk": "^4.1.0",

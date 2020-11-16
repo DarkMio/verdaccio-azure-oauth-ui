@@ -4,34 +4,41 @@ import { get } from "lodash"
 
 import { pluginName } from "../../constants"
 import { logger } from "../../logger"
+import { GithubConfig } from "./../github/GithubConfig"
+import { AzureConfig } from "./../azure/AzureConfig"
 
 //
 // Types
 //
-
 export interface PluginConfig {
-  org: string
-  "client-id": string
-  "client-secret": string
-  "enterprise-origin"?: string
+  mode: GithubConfig["configName"]  | AzureConfig["configName"];
+  github?: GithubConfig;
+  azure?: AzureConfig
 }
 
-export type PluginConfigKey = keyof PluginConfig
+export interface ModeConfig {
+  configName: string;
+}
+
+export type PluginConfigKey = keyof Config
 
 export interface Config extends VerdaccioConfig, PluginConfig {
-  middlewares: { [pluginName]: PluginConfig }
-  auth: { [pluginName]: PluginConfig }
+  middlewares: {
+    [pluginName]: PluginConfig
+  }
+  auth: {
+    [pluginName]: PluginConfig
+  }
 }
 
 //
 // Access
 //
-
-export function getConfig(config: Config, key: PluginConfigKey): string {
+export function getConfig<T = string>(config: ModeConfig, key: PluginConfigKey): T {
   const value =
     null ||
-    get(config, `middlewares[${pluginName}][${key}]`) ||
-    get(config, `auth[${pluginName}][${key}]`)
+    get(config, `middlewares[${pluginName}][${config.configName}][${key}]`) ||
+    get(config, `auth[${pluginName}][${config.configName}][${key}]`)
 
   return process.env[value] || value
 }
@@ -39,8 +46,7 @@ export function getConfig(config: Config, key: PluginConfigKey): string {
 //
 // Validation
 //
-
-function ensurePropExists(config: Config, key: PluginConfigKey) {
+function ensurePropExists(config: ModeConfig, key: PluginConfigKey) {
   const value = getConfig(config, key)
 
   if (!value) {
@@ -63,10 +69,17 @@ function ensureNodeIsNotEmpty(config: Config, node: keyof Config) {
 }
 
 export function validateConfig(config: Config) {
-  ensureNodeIsNotEmpty(config, "auth")
-  ensureNodeIsNotEmpty(config, "middlewares")
+  if(!config.azure && !config.github) {
+    throw new Error("Either azure or github configuration must be present.");
+  }
 
-  ensurePropExists(config, "org")
-  ensurePropExists(config, "client-id")
-  ensurePropExists(config, "client-secret")
+  if(config.github) {
+    const githubConfig = config.github;
+    ensureNodeIsNotEmpty(config, "auth")
+    ensureNodeIsNotEmpty(config, "middlewares")
+
+    ensurePropExists(githubConfig, "org")
+    ensurePropExists(githubConfig, "client-id")
+    ensurePropExists(githubConfig, "client-secret")
+  }
 }
