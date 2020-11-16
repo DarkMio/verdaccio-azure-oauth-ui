@@ -1,6 +1,6 @@
 {
-  "name": "verdaccio-github-oauth-ui",
-  "version": "2.3.4",
+  "name": "verdaccio-azure-ui",
+  "version": "2.4.1",
   "keywords": [
     "github",
     "login",
@@ -11,14 +11,14 @@
     "registry",
     "verdaccio"
   ],
-  "homepage": "https://github.com/n4bb12/verdaccio-github-oauth-ui/blob/master/README.md",
-  "bugs": "https://github.com/n4bb12/verdaccio-github-oauth-ui/issues",
-  "repository": "github:n4bb12/verdaccio-github-oauth-ui",
+  "homepage": "https://dev.azure.com/island-labs/Packages/_git/verdaccio-azure-oauth-ui/README.md",
+  "bugs": "https://dev.azure.com/island-labs/Packages/_git/verdaccio-azure-oauth-ui",
+  "repository": "ssh.dev.azure.com:v3/island-labs/Packages/verdaccio-azure-oauth-ui",
   "license": "MIT",
-  "author": "Abraham Schilling",
+  "author": "Island Labs",
   "main": "dist/server.js",
   "bin": {
-    "verdaccio-github-oauth-ui": "dist/cli.js"
+    "verdaccio-azure-ui": "dist/cli.js"
   },
   "files": [
     "dist"
@@ -92,7 +92,7 @@
     "node": "^10||^12||^14"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://rooms-pipeline-dev.island-labs.com/"
   },
   "$schema": "http://json.schemastore.org/package"
 }
