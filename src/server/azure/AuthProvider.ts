@@ -27,11 +27,11 @@ const GROUPS_INFO_ENDPOINT =
   "https://graph.microsoft.com/v1.0/directoryObjects/getByIds"
 
 export class AzureAuthProvider implements AuthProvider {
-  private readonly tenant = getConfig(this.config, "tenant")
-  private readonly clientId = getConfig(this.config, "client-id")
-  private readonly clientSecret = getConfig(this.config, "client-secret")
-  private readonly scope = BASE_SCOPE + (getConfig(this.config, "scope") || "")
-  private readonly allowedGroups = getConfig<string[]>(this.config, "allow-groups") || [];
+  private readonly tenant = this.config.tenant;
+  private readonly clientId = this.config.clientId;
+  private readonly clientSecret = this.config.clientSecret;
+  private readonly scope = BASE_SCOPE + (this.config.scope || "")
+  private readonly allowedGroups = this.config.allowGroups || [];
   private readonly endpointUrl: string
   private readonly tokenUrl: string
   private readonly authorizationUrl: string
@@ -102,7 +102,8 @@ export class AzureAuthProvider implements AuthProvider {
 
   async getGroups(token: string): Promise<string[]> {
     const groupIds = await this.getGroupIds(token)
-    return await this.resolveGroupIds(token, groupIds)
+    var groups = await this.resolveGroupIds(token, groupIds)
+    return groups;
   }
 
   private async getGroupIds(token: string): Promise<string[]> {
@@ -138,7 +139,6 @@ export class AzureAuthProvider implements AuthProvider {
       options,
     ).json()) as AzureDirectoryObjectResponse
     const names = response.value.map((x) => x.mailNickname)
-    logger.log(names)
     return names
   }
 }
