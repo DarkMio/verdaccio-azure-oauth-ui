@@ -3,9 +3,7 @@ import { Request } from "express"
 import { stringify } from "querystring"
 
 import { AzureConfig } from "./AzureConfig"
-import { getConfig } from "./../plugin/Config"
 import { AuthProvider } from "../plugin/AuthProvider"
-import { logger } from "../../logger"
 
 import {
   AzureTokenResponse,
@@ -27,11 +25,11 @@ const GROUPS_INFO_ENDPOINT =
   "https://graph.microsoft.com/v1.0/directoryObjects/getByIds"
 
 export class AzureAuthProvider implements AuthProvider {
-  private readonly tenant = this.config.tenant;
-  private readonly clientId = this.config.clientId;
-  private readonly clientSecret = this.config.clientSecret;
+  private readonly tenant = this.config.tenant
+  private readonly clientId = this.config.clientId
+  private readonly clientSecret = this.config.clientSecret
   private readonly scope = BASE_SCOPE + (this.config.scope || "")
-  private readonly allowedGroups = this.config.allowGroups || [];
+  private readonly allowedGroups = this.config.allowGroups || []
   private readonly endpointUrl: string
   private readonly tokenUrl: string
   private readonly authorizationUrl: string
@@ -40,6 +38,11 @@ export class AzureAuthProvider implements AuthProvider {
     this.endpointUrl = API_URL + this.tenant
     this.tokenUrl = this.endpointUrl + TOKEN_ENDPOINT
     this.authorizationUrl = this.endpointUrl + AUTHORIZATION_ENDPOINT
+    if (!this.clientId || !this.clientSecret || !this.tenant) {
+      throw new Error(
+        "Missing clientId, clientSecret or tenant in config for azure",
+      )
+    }
   }
 
   getId(): string {
@@ -62,7 +65,7 @@ export class AzureAuthProvider implements AuthProvider {
   }
 
   getAllowedGroups(): string[] {
-    return [this.tenant, ...this.allowedGroups] as string[];
+    return this.allowedGroups as string[]
   }
 
   async getToken(code: string, callbackUrl?: string): Promise<string> {
@@ -103,7 +106,7 @@ export class AzureAuthProvider implements AuthProvider {
   async getGroups(token: string): Promise<string[]> {
     const groupIds = await this.getGroupIds(token)
     var groups = await this.resolveGroupIds(token, groupIds)
-    return groups;
+    return groups
   }
 
   private async getGroupIds(token: string): Promise<string[]> {

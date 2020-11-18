@@ -6,4 +6,4 @@ export interface GithubConfig extends ModeConfig {
   "client-id": string
   "client-secret": string
   "enterprise-origin"?: string
-}  
+}

@@ -4,20 +4,17 @@ import { get } from "lodash"
 
 import { pluginName } from "../../constants"
 import { logger } from "../../logger"
-import { GithubConfig } from "./../github/GithubConfig"
-import { AzureConfig } from "./../azure/AzureConfig"
 
 //
 // Types
 //
 export interface PluginConfig {
-  mode: GithubConfig["configName"]  | AzureConfig["configName"];
-  github?: GithubConfig;
-  azure?: AzureConfig
+  mode: ModeConfig["configName"]
+  config: ModeConfig
 }
 
 export interface ModeConfig {
-  configName: string;
+  configName: string
 }
 
 export type PluginConfigKey = keyof Config
@@ -34,7 +31,10 @@ export interface Config extends VerdaccioConfig, PluginConfig {
 //
 // Access
 //
-export function getConfig<T = string>(config: ModeConfig, key: PluginConfigKey): T {
+export function getConfig<T = string>(
+  config: ModeConfig,
+  key: PluginConfigKey,
+): T {
   const value =
     null ||
     get(config, `middlewares[${pluginName}][${config.configName}][${key}]`) ||
@@ -69,17 +69,9 @@ function ensureNodeIsNotEmpty(config: Config, node: keyof Config) {
 }
 
 export function validateConfig(config: Config) {
-  if(!config.azure && !config.github) {
-    throw new Error("Either azure or github configuration must be present.");
+  if (!config.azure && !config.github) {
+    throw new Error("Either azure or github configuration must be present.")
   }
-
-  if(config.github) {
-    const githubConfig = config.github;
-    ensureNodeIsNotEmpty(config, "auth")
-    ensureNodeIsNotEmpty(config, "middlewares")
-
-    ensurePropExists(githubConfig, "org")
-    ensurePropExists(githubConfig, "client-id")
-    ensurePropExists(githubConfig, "client-secret")
-  }
+  ensureNodeIsNotEmpty(config, "auth")
+  ensureNodeIsNotEmpty(config, "middlewares")
 }

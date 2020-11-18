@@ -3,12 +3,11 @@ import { stringify } from "querystring"
 import { logger } from "../../logger"
 import { User, Verdaccio } from "../verdaccio"
 import { AuthProvider } from "./AuthProvider"
-import { Config, getConfig } from "./Config"
 
 export class AuthCore {
   constructor(
     private readonly verdaccio: Verdaccio,
-    private readonly authProvider: AuthProvider
+    private readonly authProvider: AuthProvider,
   ) {}
 
   createAuthenticatedUser(username: string): User {
@@ -33,7 +32,11 @@ export class AuthCore {
   }
 
   authenticate(username: string, groups: string[]): boolean {
-    const success = groups.some(x => this.authProvider.getAllowedGroups().includes(x));
+    const allowedGroups = this.authProvider.getAllowedGroups()
+    logger.log(
+      `User '${username}' is part of '${groups}', checking against '${allowedGroups}'`,
+    )
+    const success = groups.some((x) => allowedGroups.includes(x))
 
     if (!success) {
       logger.error(this.getDeniedMessage(username))

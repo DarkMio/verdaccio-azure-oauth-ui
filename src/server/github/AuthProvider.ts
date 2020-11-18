@@ -45,7 +45,7 @@ export class GitHubAuthProvider implements AuthProvider {
   }
 
   getAllowedGroups() {
-    return [getConfig(this.config, "org")];
+    return [getConfig(this.config, "org")]
   }
 
   async getToken(code: string) {

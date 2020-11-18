@@ -1,4 +1,4 @@
-import { ModeConfig } from "./../plugin/Config";
+import { ModeConfig } from "./../plugin/Config"
 
 export interface AzureConfig extends ModeConfig {
   configName: "azure"

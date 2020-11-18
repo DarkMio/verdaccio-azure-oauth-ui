@@ -1,38 +1,44 @@
 import { AuthCallback, IPluginAuth, IPluginMiddleware } from "@verdaccio/types"
 import e, { Application } from "express"
+import { logger } from "../../logger"
 import { AzureAuthProvider } from "../azure"
 
 import { CliFlow, WebFlow } from "../flows"
 import { GitHubAuthProvider } from "../github"
+import { GithubConfig } from "../github/GithubConfig"
 import { Auth, Verdaccio } from "../verdaccio"
 import { AuthCore } from "./AuthCore"
-import { AuthProvider } from "./AuthProvider"
+import { AuthProvider, createAuthProvider } from "./AuthProvider"
 import { Cache } from "./Cache"
 import { Config, validateConfig } from "./Config"
 import { PatchHtml } from "./PatchHtml"
 import { registerGlobalProxyAgent } from "./ProxyAgent"
 import { ServeStatic } from "./ServeStatic"
-
+import { pluginName } from "../../constants"
 /**
  * Implements the verdaccio plugin interfaces.
  */
 export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
-  private readonly provider : AuthProvider;
-  private readonly cache : Cache;
-  private readonly verdaccio : Verdaccio;
-  private readonly core : AuthCore;
+  private readonly provider: AuthProvider
+  private readonly cache: Cache
+  private readonly verdaccio: Verdaccio
+  private readonly core: AuthCore
 
   constructor(private readonly config: Config) {
-    if(config.auth["azure-ui"].mode === "github" && config.auth["azure-ui"].github) {
-      this.provider = new GitHubAuthProvider(config.auth["azure-ui"].github);
-    } else if(config.auth["azure-ui"].azure) {
-      this.provider = new AzureAuthProvider(config.auth["azure-ui"].azure);
-    } else {
-      throw Error("No config for either azure or github is present.");
+    switch (config.auth[pluginName].mode) {
+      case "github":
+        this.provider = createAuthProvider(GitHubAuthProvider, config.config)
+        break
+      case "azure":
+        this.provider = createAuthProvider(AzureAuthProvider, config.config)
+        break
+      default:
+        throw Error("No config for either azure or github is present.")
     }
-    this.cache = new Cache(this.provider);
-    this.verdaccio = new Verdaccio(this.config);
-    this.core = new AuthCore(this.verdaccio, this.provider);
+
+    this.cache = new Cache(this.provider)
+    this.verdaccio = new Verdaccio(this.config)
+    this.core = new AuthCore(this.verdaccio, this.provider)
     validateConfig(config)
     registerGlobalProxyAgent()
   }
@@ -64,7 +70,7 @@ export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
 
       if (this.core.authenticate(username, providerGroups)) {
         const user = this.core.createAuthenticatedUser(username)
-
+        logger.log("Creating new user: " + JSON.stringify(user))
         callback(null, user.real_groups)
       } else {
         callback(null, false)
