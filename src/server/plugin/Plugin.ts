@@ -27,10 +27,16 @@ export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
   constructor(private readonly config: Config) {
     switch (config.auth[pluginName].mode) {
       case "github":
-        this.provider = createAuthProvider(GitHubAuthProvider, config.config)
+        this.provider = createAuthProvider(
+          GitHubAuthProvider,
+          config.auth[pluginName].config,
+        )
         break
       case "azure":
-        this.provider = createAuthProvider(AzureAuthProvider, config.config)
+        this.provider = createAuthProvider(
+          AzureAuthProvider,
+          config.auth[pluginName].config,
+        )
         break
       default:
         throw Error("No config for either azure or github is present.")

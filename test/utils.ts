@@ -1,7 +1,12 @@
 import { Request } from "express"
 import { pluginName } from "src/constants"
+import { GitHubAuthProvider } from "src/server/github"
+import { GithubConfig } from "src/server/github/GithubConfig"
 import { AuthCore } from "src/server/plugin/AuthCore"
-import { AuthProvider } from "src/server/plugin/AuthProvider"
+import {
+  AuthProvider,
+  createAuthProvider,
+} from "src/server/plugin/AuthProvider"
 import { Config } from "src/server/plugin/Config"
 import { Plugin } from "src/server/plugin/Plugin"
 import { Verdaccio } from "src/server/verdaccio/Verdaccio"
@@ -20,7 +25,7 @@ export const testUIToken = "test-ui-token"
 export const testNPMToken = "test-npm-token"
 export const testErrorMessage = "expected-error"
 
-export function createTestPluginConfig(config?: any) {
+export function createTestPluginConfig(config?: any): GithubConfig {
   return {
     org: testRequiredGroup,
     "client-id": testClientId,
@@ -32,7 +37,10 @@ export function createTestPluginConfig(config?: any) {
 export function createTestConfig(config?: any) {
   return ({
     auth: {
-      [pluginName]: createTestPluginConfig(),
+      [pluginName]: {
+        mode: "github",
+        config: createTestPluginConfig(),
+      },
     },
     middlewares: {
       [pluginName]: {
@@ -62,6 +70,9 @@ export function createTestAuthProvider() {
     getCode(req: Request) {
       return testOAuthCode
     },
+    getAllowedGroups(): string[] {
+      return [testRequiredGroup]
+    },
     async getToken(code: string) {
       return code === testOAuthCode ? testOAuthToken : ""
     },
@@ -76,7 +87,10 @@ export function createTestAuthProvider() {
 }
 
 export function createTestAuthCore(config?: any) {
-  return new AuthCore(createTestVerdaccio(config), createTestConfig(config))
+  return new AuthCore(
+    createTestVerdaccio(config),
+    createAuthProvider(GitHubAuthProvider, createTestPluginConfig(config)),
+  )
 }
 
 export function createTestPlugin(config?: any) {

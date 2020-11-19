@@ -14,7 +14,7 @@ describe("Config", () => {
           [pluginName]: { enabled: true },
         },
         middlewares: {
-          [pluginName]: createTestPluginConfig(),
+          [pluginName]: { mode: "github", config: createTestPluginConfig() },
         },
       })
     })
@@ -22,7 +22,7 @@ describe("Config", () => {
     it("accepts an empty 'middlewares' node as long as it is enabled", () => {
       shouldSucceed({
         auth: {
-          [pluginName]: createTestPluginConfig(),
+          [pluginName]: { mode: "github", config: createTestPluginConfig() },
         },
         middlewares: {
           [pluginName]: { enabled: true },
@@ -34,8 +34,11 @@ describe("Config", () => {
       shouldSucceed({
         auth: {
           [pluginName]: {
-            ...createTestPluginConfig(),
-            ["'enterprise-origin'"]: null,
+            mode: "github",
+            config: {
+              ...createTestPluginConfig(),
+              ["'enterprise-origin'"]: null,
+            },
           },
         },
         middlewares: {
@@ -56,7 +59,7 @@ describe("Config", () => {
     it("throws an error if 'auth' node is not enabled", () => {
       shouldFail({
         middlewares: {
-          [pluginName]: createTestPluginConfig(),
+          [pluginName]: { mode: "github", config: createTestPluginConfig() },
         },
       })
     })
@@ -64,7 +67,7 @@ describe("Config", () => {
     it("throws an error if 'middlewares' node is not enabled", () => {
       shouldFail({
         auth: {
-          [pluginName]: createTestPluginConfig(),
+          [pluginName]: { mode: "github", config: createTestPluginConfig() },
         },
       })
     })
@@ -72,7 +75,10 @@ describe("Config", () => {
     it("throws an error if 'org' is missing", () => {
       shouldFail({
         auth: {
-          [pluginName]: { ...createTestPluginConfig(), ["org"]: null },
+          [pluginName]: {
+            mode: "github",
+            config: { ...createTestPluginConfig(), ["org"]: null },
+          },
         },
         middlewares: {
           [pluginName]: { enabled: true },
@@ -83,7 +89,10 @@ describe("Config", () => {
     it("throws an error if 'client-id' is missing", () => {
       shouldFail({
         auth: {
-          [pluginName]: { ...createTestPluginConfig(), ["client-id"]: null },
+          [pluginName]: {
+            mode: "github",
+            config: { ...createTestPluginConfig(), ["client-id"]: null },
+          },
         },
         middlewares: {
           [pluginName]: { enabled: true },
@@ -95,8 +104,11 @@ describe("Config", () => {
       shouldFail({
         auth: {
           [pluginName]: {
-            ...createTestPluginConfig(),
-            ["client-secret"]: null,
+            mode: "github",
+            config: {
+              ...createTestPluginConfig(),
+              ["client-secret"]: null,
+            },
           },
         },
         middlewares: {

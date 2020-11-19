@@ -3,13 +3,13 @@ import { stringify } from "querystring"
 
 import { AuthProvider } from "../plugin/AuthProvider"
 import { GithubConfig } from "./GithubConfig"
-import { getConfig } from "../plugin/Config"
+import { getModeConfig } from "../plugin/Config"
 import { GitHubClient } from "./Client"
 
 export class GitHubAuthProvider implements AuthProvider {
-  private readonly clientId = getConfig(this.config, "client-id")
-  private readonly clientSecret = getConfig(this.config, "client-secret")
-  private readonly enterpriseOrigin = getConfig(
+  private readonly clientId = getModeConfig(this.config, "client-id")
+  private readonly clientSecret = getModeConfig(this.config, "client-secret")
+  private readonly enterpriseOrigin = getModeConfig(
     this.config,
     "enterprise-origin",
   )
@@ -45,7 +45,7 @@ export class GitHubAuthProvider implements AuthProvider {
   }
 
   getAllowedGroups() {
-    return [getConfig(this.config, "org")]
+    return [getModeConfig(this.config, "org")]
   }
 
   async getToken(code: string) {

@@ -31,14 +31,28 @@ export interface Config extends VerdaccioConfig, PluginConfig {
 //
 // Access
 //
-export function getConfig<T = string>(
+export function getConfig<T = string>(config: Config, key: PluginConfigKey): T {
+  const value =
+    null ||
+    get(config, `middlewares[${pluginName}][config][${key}]`) ||
+    get(config, `auth[${pluginName}][config][${key}]`)
+
+  return process.env[value] || value
+}
+
+export function getMode<T = string>(config: Config): T {
+  const value =
+    null ||
+    get(config, `middlewares[${pluginName}][mode]`) ||
+    get(config, `auth[${pluginName}][mode]`)
+  return value
+}
+
+export function getModeConfig<T = string>(
   config: ModeConfig,
   key: PluginConfigKey,
 ): T {
-  const value =
-    null ||
-    get(config, `middlewares[${pluginName}][${config.configName}][${key}]`) ||
-    get(config, `auth[${pluginName}][${config.configName}][${key}]`)
+  const value = null || get(config, `[${key}]`)
 
   return process.env[value] || value
 }
@@ -46,7 +60,7 @@ export function getConfig<T = string>(
 //
 // Validation
 //
-function ensurePropExists(config: ModeConfig, key: PluginConfigKey) {
+function ensurePropExists(config: Config, key: PluginConfigKey) {
   const value = getConfig(config, key)
 
   if (!value) {
@@ -69,9 +83,13 @@ function ensureNodeIsNotEmpty(config: Config, node: keyof Config) {
 }
 
 export function validateConfig(config: Config) {
-  if (!config.azure && !config.github) {
-    throw new Error("Either azure or github configuration must be present.")
+  const mode = getMode(config)
+  if (mode === "github") {
+    ensurePropExists(config, "org")
+    ensurePropExists(config, "client-id")
+    ensurePropExists(config, "client-secret")
   }
+
   ensureNodeIsNotEmpty(config, "auth")
   ensureNodeIsNotEmpty(config, "middlewares")
 }

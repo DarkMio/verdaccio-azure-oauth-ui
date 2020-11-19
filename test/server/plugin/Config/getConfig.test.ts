@@ -1,11 +1,21 @@
 import { pluginName } from "src/constants"
+import { GithubConfig } from "src/server/github/GithubConfig"
 import { Config, getConfig } from "src/server/plugin/Config"
 
 describe("Config", () => {
   describe("getConfig", () => {
+    const githubConfig: GithubConfig = {
+      configName: "github",
+      org: "TEST_ORG",
+      "client-id": "TEST_ID",
+      "client-secret": "TEST_SECRET",
+    }
     const authConfig: Config = {
       auth: {
-        [pluginName]: { org: "TEST_ORG" },
+        [pluginName]: {
+          mode: "github",
+          config: githubConfig,
+        },
       },
       middlewares: {
         [pluginName]: { enabled: true },
@@ -17,7 +27,10 @@ describe("Config", () => {
         [pluginName]: { enabled: true },
       },
       middlewares: {
-        [pluginName]: { org: "TEST_ORG" },
+        [pluginName]: {
+          mode: "github",
+          config: githubConfig,
+        },
       },
     } as any
 

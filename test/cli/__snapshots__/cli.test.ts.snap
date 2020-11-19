@@ -9,6 +9,6 @@ Array [
   "",
   "or by using the registry argument",
   "",
-  "npx verdaccio-github-oauth-ui --registry <URL>",
+  "npx verdaccio-azure-ui --registry <URL>",
 ]
 `;

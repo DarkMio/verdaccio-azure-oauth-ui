@@ -11,6 +11,7 @@ import {
   AzureMemberGroupResponse,
   AzureDirectoryObjectResponse,
 } from "./AzureApiTypes"
+import { logger } from "../../logger"
 
 const BASE_SCOPE = "user.read openid profile offline_access "
 
@@ -35,7 +36,7 @@ export class AzureAuthProvider implements AuthProvider {
   private readonly authorizationUrl: string
 
   constructor(private readonly config: AzureConfig) {
-    this.endpointUrl = API_URL + this.tenant
+    this.endpointUrl = API_URL + this.config.tenant
     this.tokenUrl = this.endpointUrl + TOKEN_ENDPOINT
     this.authorizationUrl = this.endpointUrl + AUTHORIZATION_ENDPOINT
     if (!this.clientId || !this.clientSecret || !this.tenant) {
@@ -76,7 +77,7 @@ export class AzureAuthProvider implements AuthProvider {
         client_secret: this.clientSecret,
         grant_type: "authorization_code",
         scope: this.scope,
-        code: code,
+        code,
         redirect_url: callbackUrl,
       },
     } as const
@@ -105,7 +106,7 @@ export class AzureAuthProvider implements AuthProvider {
 
   async getGroups(token: string): Promise<string[]> {
     const groupIds = await this.getGroupIds(token)
-    var groups = await this.resolveGroupIds(token, groupIds)
+    const groups = await this.resolveGroupIds(token, groupIds)
     return groups
   }
 
