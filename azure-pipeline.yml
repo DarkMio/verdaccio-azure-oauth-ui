@@ -13,4 +13,4 @@ trigger:
 pool: 'Unity Pipelines'
 
 jobs:
-- template: templates/pipelines/node/publish-npm-package.yml
+- template: /tasks/node/publish-npm-package.1.yml
