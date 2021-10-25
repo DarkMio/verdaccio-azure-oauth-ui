@@ -2152,6 +2152,13 @@
     http-errors "1.8.0"
     http-status-codes "1.4.0"
 
+"@verdaccio/file-locking@^10.0.0":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@verdaccio/file-locking/-/file-locking-10.0.0.tgz#3d476a6ba28207c795d49828438e7335166c1cfc"
+  integrity sha512-2tQUbJF3tQ3CY9grAlpovaF/zu8G56CBYMaeHwMBHo9rAmsJI9i7LfliHGS6Jygbs8vd0cOCPT7vl2CL9T8upw==
+  dependencies:
+    lockfile "1.0.4"
+
 "@verdaccio/file-locking@^9.7.2":
   version "9.7.2"
   resolved "https://registry.npmjs.org/@verdaccio/file-locking/-/file-locking-9.7.2.tgz#953367a42554ef7019fb4206c6e3af5e2dc217db"
@@ -9857,12 +9864,23 @@ verdaccio-audit@9.7.3:
     express "4.17.1"
     request "2.88.2"
 
-verdaccio-htpasswd@9.7.2, verdaccio-htpasswd@^9.3.0:
+verdaccio-htpasswd@9.7.2:
   version "9.7.2"
   resolved "https://registry.npmjs.org/verdaccio-htpasswd/-/verdaccio-htpasswd-9.7.2.tgz#ba14a29b65658b3f4c7e2042c3fcf20e697401a6"
   integrity sha512-c7ZEb7wuce0+4h92w4f1ySMhsIWFs/mlsFjjoqIlY5SBskmQI5RHC7HQglVgFjOMxrWoaaadJ5WGmFV+A/yxPQ==
   dependencies:
     "@verdaccio/file-locking" "^9.7.2"
+    apache-md5 "1.1.2"
+    bcryptjs "2.4.3"
+    http-errors "1.8.0"
+    unix-crypt-td-js "1.1.4"
+
+verdaccio-htpasswd@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/verdaccio-htpasswd/-/verdaccio-htpasswd-10.0.0.tgz#7a7f44e8ed4db40c53deef0f5101f2a16dce4ff1"
+  integrity sha512-3TKwiLwl8/fbaTDawHvjSYcsyMmdARg58keP/1plv74x+Jw0sC66HbbRwQ/tPO5mqoG0UwoWW+lkO8h/OiWi9w==
+  dependencies:
+    "@verdaccio/file-locking" "^10.0.0"
     apache-md5 "1.1.2"
     bcryptjs "2.4.3"
     http-errors "1.8.0"
