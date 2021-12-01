@@ -2152,6 +2152,13 @@
     http-errors "1.8.0"
     http-status-codes "1.4.0"
 
+"@verdaccio/file-locking@10.0.1":
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/@verdaccio/file-locking/-/file-locking-10.0.1.tgz#0a1040a2ce90485607b8dfcf2ca7820ef9ae9e11"
+  integrity sha512-yUi3wo17jhY2LZMNAv8/+oVfHJfqx0MdpKgUeQjoXHFfrEmpMck23ZfBQmXSM8xiC7RmdmOqlyGkJMbAkMb6nQ==
+  dependencies:
+    lockfile "1.0.4"
+
 "@verdaccio/file-locking@^9.7.2":
   version "9.7.2"
   resolved "https://registry.npmjs.org/@verdaccio/file-locking/-/file-locking-9.7.2.tgz#953367a42554ef7019fb4206c6e3af5e2dc217db"
@@ -2391,6 +2398,11 @@ apache-md5@1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/apache-md5/-/apache-md5-1.1.2.tgz#ee49736b639b4f108b6e9e626c6da99306b41692"
   integrity sha1-7klza2ObTxCLbp5ibG2pkwa0FpI=
+
+apache-md5@1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/apache-md5/-/apache-md5-1.1.7.tgz#dcef1802700cc231d60c5e08fd088f2f9b36375a"
+  integrity sha512-JtHjzZmJxtzfTSjsCyHgPR155HBe5WGyUyHTaEkfy46qhwCFKx1Epm6nAxgUG3WfUZP1dWhGqj9Z2NOBeZ+uBw==
 
 argparse@^1.0.7:
   version "1.0.10"
@@ -5094,6 +5106,17 @@ http-errors@1.8.0:
     setprototypeof "1.2.0"
     statuses ">= 1.5.0 < 2"
     toidentifier "1.0.0"
+
+http-errors@1.8.1:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/http-errors/-/http-errors-1.8.1.tgz#7c3f28577cbc8a207388455dbd62295ed07bd68c"
+  integrity sha512-Kpk9Sm7NmI+RHhnj6OIWDI1d6fIoFAtFt9RLaTMRlg/8w49juAStsrBgp0Dp4OdxdVbRIeKhtCUvoi/RuAhO4g==
+  dependencies:
+    depd "~1.1.2"
+    inherits "2.0.4"
+    setprototypeof "1.2.0"
+    statuses ">= 1.5.0 < 2"
+    toidentifier "1.0.1"
 
 http-errors@~1.7.2:
   version "1.7.3"
@@ -9413,6 +9436,11 @@ toidentifier@1.0.0:
   resolved "https://registry.npmjs.org/toidentifier/-/toidentifier-1.0.0.tgz#7e1be3470f1e77948bc43d94a3c8f4d7752ba553"
   integrity sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw==
 
+toidentifier@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.1.tgz#3be34321a88a820ed1bd80dfaa33e479fbb8dd35"
+  integrity sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==
+
 touch@^3.1.0:
   version "3.1.0"
   resolved "https://registry.npmjs.org/touch/-/touch-3.1.0.tgz#fe365f5f75ec9ed4e56825e0bb76d24ab74af83b"
@@ -9857,7 +9885,7 @@ verdaccio-audit@9.7.3:
     express "4.17.1"
     request "2.88.2"
 
-verdaccio-htpasswd@9.7.2, verdaccio-htpasswd@^9.3.0:
+verdaccio-htpasswd@9.7.2:
   version "9.7.2"
   resolved "https://registry.npmjs.org/verdaccio-htpasswd/-/verdaccio-htpasswd-9.7.2.tgz#ba14a29b65658b3f4c7e2042c3fcf20e697401a6"
   integrity sha512-c7ZEb7wuce0+4h92w4f1ySMhsIWFs/mlsFjjoqIlY5SBskmQI5RHC7HQglVgFjOMxrWoaaadJ5WGmFV+A/yxPQ==
@@ -9866,6 +9894,17 @@ verdaccio-htpasswd@9.7.2, verdaccio-htpasswd@^9.3.0:
     apache-md5 "1.1.2"
     bcryptjs "2.4.3"
     http-errors "1.8.0"
+    unix-crypt-td-js "1.1.4"
+
+verdaccio-htpasswd@^10.0.1:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/verdaccio-htpasswd/-/verdaccio-htpasswd-10.0.1.tgz#ee7c9aa26247f466a3cd89ca63829266052d4658"
+  integrity sha512-H5gMDHpa/xLEDwSsLc+9P+2cDot801YCbuR5KOlsD6GqOv33UjtU+p4bHkZCFbAoQYvIraucAoJrxzRiRSWQMA==
+  dependencies:
+    "@verdaccio/file-locking" "10.0.1"
+    apache-md5 "1.1.7"
+    bcryptjs "2.4.3"
+    http-errors "1.8.1"
     unix-crypt-td-js "1.1.4"
 
 verdaccio@^4.4.2:
